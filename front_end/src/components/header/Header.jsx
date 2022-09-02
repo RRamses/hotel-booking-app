@@ -1,3 +1,4 @@
+
 import {
   faBed,
   faCalendarDays,
@@ -9,26 +10,26 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./header.css";
 import { DateRange } from "react-date-range";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { SearchContext } from "../../context/SearchContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const Header = ({ type }) => {
   const [destination, setDestination] = useState("");
   const [openDate, setOpenDate] = useState(false);
 
   //code de configuration du calendrier Daterange importer depuis react date range
-  const [date, setDate] = useState([
+  const [dates, setDates] = useState([
     {
       startDate: new Date(),
       endDate: new Date(),
       key: "selection",
     },
   ]);
-  //
-
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState({
     adult: 1,
@@ -38,7 +39,10 @@ const Header = ({ type }) => {
 
   const navigate = useNavigate();//permet d envoyé des infos partout ou on veut dans l'appli
 
-  //fonction du conpteur pour les options "nombre d adulte , d 'enfant etc..."
+  
+  const { user } = useContext(AuthContext);
+
+//fonction du conpteur pour les options "nombre d adulte , d 'enfant etc..."
   const handleOption = (name, operation) => {
     setOptions((prev) => {
       return {
@@ -48,8 +52,12 @@ const Header = ({ type }) => {
     });
   };
 
+  const { dispatch } = useContext(SearchContext);
+  
+  //lorque cette fontion est activé , elle active l 'action NEW_SEARch ( du reducer dans searchcontexte ) qui  lui modifie l etat initial et le transmet ont componant designé
   const handleSearch = () => {
-    navigate("/hotels", { state: { destination, date, options } });
+    dispatch({ type: "NEW_SEARCH", payload: { destination, dates, options } });
+    navigate("/hotels", { state: { destination, dates, options } });
   };
 
   return (
@@ -90,7 +98,7 @@ const Header = ({ type }) => {
               Get rewarded for your travels – unlock instant savings of 10% or
               more with a free Lamabooking account
             </p>
-            <button className="headerBtn">Sign in / Register</button>
+            {!user && <button className="headerBtn">Sign in / Register</button>}
             <div className="headerSearch">
               <div className="headerSearchItem">
                 <FontAwesomeIcon icon={faBed} className="headerIcon" />
@@ -106,18 +114,18 @@ const Header = ({ type }) => {
                 <span
                   onClick={() => setOpenDate(!openDate)}
                   className="headerSearchText"
-                  //juste rendre lse date choisit lisibles en utilsant le format fournit par date-fns
-                >{`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(
-                  date[0].endDate,
+                >
+                 //juste rendre les date choisit lisibles en utilsant le format fournit par date-fns
+                {`${format(dates[0].startDate, "MM/dd/yyyy")} to ${format(
+                  dates[0].endDate,
                   "MM/dd/yyyy"
                 )}`}</span>
-               
                 {openDate && (
                   <DateRange
                     editableDateInputs={true}
-                    onChange={(item) => setDate([item.selection])}
+                    onChange={(item) => setDates([item.selection])}
                     moveRangeOnFirstSelection={false}
-                    ranges={date}
+                    ranges={dates}
                     className="date"
                     minDate={new Date()}
                     //componant tirer de la docus du calendrier de date range  s affiche si openDate est vrai
@@ -131,9 +139,9 @@ const Header = ({ type }) => {
                   className="headerSearchText"
                   //afficher les options de reservations comme le nombre d'adulte et d enfant ansi que le nombre de piece
                 >{`${options.adult} adult · ${options.children} children · ${options.room} room`}</span>
-                
+
                 {//les options de reservations son modifiable et s affiche si openOptions est vrai
-                openOptions && (
+                  openOptions && (
                   <div className="options">
                     <div className="optionItem">
                       <span className="optionText">Adult</span>
@@ -215,3 +223,6 @@ const Header = ({ type }) => {
 };
 
 export default Header;
+
+
+
