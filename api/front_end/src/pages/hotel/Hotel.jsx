@@ -42,6 +42,7 @@ const Hotel = () => {
 
   const days = dayDifference(dates[0].endDate, dates[0].startDate);
 
+  //
   const handleOpen = (i) => {
     setSlideNumber(i);
     setOpen(true);
@@ -59,6 +60,7 @@ const Hotel = () => {
     setSlideNumber(newSlideNumber);
   };
 
+  //fonction du bouton de reservation
   const handleClick = () => {
     if (user) {
       setOpenModal(true);

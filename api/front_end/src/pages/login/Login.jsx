@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../config";
 import { AuthContext } from "../../context/AuthContext";
 import "./login.css";
 
@@ -22,7 +23,7 @@ const Login = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" }); // on met ajour notre etat 
     try {
-      const res = await axios.post("/auth/login", credentials);
+      const res = await axiosInstance.post("/auth/login", credentials);
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details }); // quand   est ok on envoi les donée reu de l api notre atat et il se remet a jour
       navigate("/")
     } catch (err) {

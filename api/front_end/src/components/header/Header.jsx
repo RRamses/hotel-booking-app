@@ -115,8 +115,9 @@ const Header = ({ type }) => {
                   onClick={() => setOpenDate(!openDate)}
                   className="headerSearchText"
                 >
-                 //juste rendre les date choisit lisibles en utilsant le format fournit par date-fns
-                {`${format(dates[0].startDate, "MM/dd/yyyy")} to ${format(
+                
+                {//juste rendre les date choisit lisibles en utilsant le format fournit par date-fns
+                `${format(dates[0].startDate, "MM/dd/yyyy")} to ${format(
                   dates[0].endDate,
                   "MM/dd/yyyy"
                 )}`}</span>
@@ -140,7 +141,7 @@ const Header = ({ type }) => {
                   //afficher les options de reservations comme le nombre d'adulte et d enfant ansi que le nombre de piece
                 >{`${options.adult} adult · ${options.children} children · ${options.room} room`}</span>
 
-                {//les options de reservations son modifiable et s affiche si openOptions est vrai
+                {//les options de reservations sont modifiable et s affiche si openOptions est vrai
                   openOptions && (
                   <div className="options">
                     <div className="optionItem">
